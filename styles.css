@@ -1,0 +1,54 @@
+/* ── Tab header tinting ─────────────────────────────────────────────────────
+   The doubled class outweighs the theme's own tab-header background rules
+   without resorting to !important. */
+
+.workspace-tab-header.tab-tint-tinted.tab-tint-tinted {
+	background-color: var(--tab-tint-color);
+	transition: background-color 0.2s ease;
+}
+
+.workspace-tab-header.tab-tint-tinted .workspace-tab-header-inner-title,
+.workspace-tab-header.tab-tint-tinted .workspace-tab-header-inner-icon,
+.workspace-tab-header.tab-tint-tinted .workspace-tab-header-inner-close-button,
+.workspace-tab-header.tab-tint-tinted .workspace-tab-header-status-container {
+	color: var(--tab-tint-ink);
+}
+
+.workspace-tab-header.tab-tint-tinted:hover {
+	filter: brightness(0.94);
+}
+
+.workspace-tab-header.tab-tint-tinted.is-active {
+	filter: brightness(0.88);
+}
+
+.workspace-tab-header.tab-tint-tinted.is-active .workspace-tab-header-inner-title {
+	font-weight: var(--font-semibold);
+}
+
+/* ── Context-menu swatch ──────────────────────────────────────────────────── */
+
+.menu-item .tab-tint-swatch {
+	width: 14px;
+	height: 14px;
+	margin-left: auto;
+	border-radius: 50%;
+	border: 1px solid var(--background-modifier-border);
+	background-color: var(--tab-tint-swatch-color, var(--background-secondary));
+	flex-shrink: 0;
+}
+
+/* ── Settings ─────────────────────────────────────────────────────────────── */
+
+.tab-tint-name-input {
+	width: 140px;
+}
+
+.tab-tint-hex-input {
+	width: 96px;
+	font-family: var(--font-monospace);
+}
+
+.tab-tint-hex-input.tab-tint-invalid {
+	border-color: var(--text-error);
+}
