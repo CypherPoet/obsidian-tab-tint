@@ -1,0 +1,28 @@
+{
+	"name": "obsidian-tab-tint",
+	"version": "1.0.0",
+	"description": "Obsidian plugin that tints tab headers so open notes are distinguishable at a glance",
+	"main": "main.js",
+	"scripts": {
+		"dev": "node esbuild.config.mjs",
+		"build": "tsc -noEmit -skipLibCheck && node esbuild.config.mjs production",
+		"version": "node version-bump.mjs && git add manifest.json versions.json"
+	},
+	"keywords": [
+		"obsidian",
+		"obsidian-plugin",
+		"tabs"
+	],
+	"author": "CypherPoet",
+	"license": "MIT",
+	"devDependencies": {
+		"@types/node": "^22.0.0",
+		"esbuild": "^0.25.0",
+		"obsidian": "latest",
+		"tslib": "^2.6.0",
+		"typescript": "^5.5.0"
+	},
+	"allowScripts": {
+		"esbuild@0.25.12": true
+	}
+}
