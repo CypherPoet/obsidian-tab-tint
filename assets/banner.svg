@@ -1,0 +1,28 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 760 190" role="img" aria-label="Tab Tint — color-code your open tabs">
+	<rect x="0" y="0" width="760" height="190" rx="18" fill="#1b2233"/>
+	<text x="44" y="88" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', 'Helvetica Neue', Arial, sans-serif" font-size="46" font-weight="700" letter-spacing="0.5" fill="#f0f3fa">Tab Tint</text>
+	<text x="46" y="120" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', 'Helvetica Neue', Arial, sans-serif" font-size="17" fill="#8f9ab3">Color-code your open tabs</text>
+
+	<!-- Tab strip -->
+	<g transform="translate(404, 112)">
+		<path d="M0 46 V9 Q0 0 9 0 H47 Q56 0 56 9 V46 Z" fill="#ffb3ba"/>
+		<rect x="12" y="15" width="32" height="5" rx="2.5" fill="rgba(23, 29, 44, 0.32)"/>
+	</g>
+	<g transform="translate(468, 112)">
+		<path d="M0 46 V9 Q0 0 9 0 H47 Q56 0 56 9 V46 Z" fill="#ffdfba"/>
+		<rect x="12" y="15" width="32" height="5" rx="2.5" fill="rgba(23, 29, 44, 0.32)"/>
+	</g>
+	<g transform="translate(532, 104)">
+		<path d="M0 54 V9 Q0 0 9 0 H47 Q56 0 56 9 V54 Z" fill="#b5ead7"/>
+		<rect x="12" y="15" width="32" height="5" rx="2.5" fill="rgba(23, 29, 44, 0.4)"/>
+	</g>
+	<g transform="translate(596, 112)">
+		<path d="M0 46 V9 Q0 0 9 0 H47 Q56 0 56 9 V46 Z" fill="#bae1ff"/>
+		<rect x="12" y="15" width="32" height="5" rx="2.5" fill="rgba(23, 29, 44, 0.32)"/>
+	</g>
+	<g transform="translate(660, 112)">
+		<path d="M0 46 V9 Q0 0 9 0 H47 Q56 0 56 9 V46 Z" fill="#e2baff"/>
+		<rect x="12" y="15" width="32" height="5" rx="2.5" fill="rgba(23, 29, 44, 0.32)"/>
+	</g>
+	<rect x="396" y="158" width="328" height="5" rx="2.5" fill="#2a3350"/>
+</svg>

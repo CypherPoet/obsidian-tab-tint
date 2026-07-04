@@ -1,0 +1,23 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 700 168" role="img" aria-label="Default palette: Rose #ffb3ba, Peach #ffdfba, Mint #b5ead7, Sky #bae1ff, Lavender #e2baff">
+	<rect x="0" y="0" width="700" height="168" rx="18" fill="#1b2233"/>
+
+	<rect x="58" y="24" width="72" height="72" rx="14" fill="#ffb3ba"/>
+	<text x="94" y="125" text-anchor="middle" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', 'Helvetica Neue', Arial, sans-serif" font-size="16" font-weight="600" fill="#eef2fa">Rose</text>
+	<text x="94" y="147" text-anchor="middle" font-family="ui-monospace, 'SF Mono', Menlo, Consolas, monospace" font-size="13" fill="#939db6">#ffb3ba</text>
+
+	<rect x="186" y="24" width="72" height="72" rx="14" fill="#ffdfba"/>
+	<text x="222" y="125" text-anchor="middle" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', 'Helvetica Neue', Arial, sans-serif" font-size="16" font-weight="600" fill="#eef2fa">Peach</text>
+	<text x="222" y="147" text-anchor="middle" font-family="ui-monospace, 'SF Mono', Menlo, Consolas, monospace" font-size="13" fill="#939db6">#ffdfba</text>
+
+	<rect x="314" y="24" width="72" height="72" rx="14" fill="#b5ead7"/>
+	<text x="350" y="125" text-anchor="middle" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', 'Helvetica Neue', Arial, sans-serif" font-size="16" font-weight="600" fill="#eef2fa">Mint</text>
+	<text x="350" y="147" text-anchor="middle" font-family="ui-monospace, 'SF Mono', Menlo, Consolas, monospace" font-size="13" fill="#939db6">#b5ead7</text>
+
+	<rect x="442" y="24" width="72" height="72" rx="14" fill="#bae1ff"/>
+	<text x="478" y="125" text-anchor="middle" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', 'Helvetica Neue', Arial, sans-serif" font-size="16" font-weight="600" fill="#eef2fa">Sky</text>
+	<text x="478" y="147" text-anchor="middle" font-family="ui-monospace, 'SF Mono', Menlo, Consolas, monospace" font-size="13" fill="#939db6">#bae1ff</text>
+
+	<rect x="570" y="24" width="72" height="72" rx="14" fill="#e2baff"/>
+	<text x="606" y="125" text-anchor="middle" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', 'Helvetica Neue', Arial, sans-serif" font-size="16" font-weight="600" fill="#eef2fa">Lavender</text>
+	<text x="606" y="147" text-anchor="middle" font-family="ui-monospace, 'SF Mono', Menlo, Consolas, monospace" font-size="13" fill="#939db6">#e2baff</text>
+</svg>
