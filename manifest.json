@@ -1,7 +1,7 @@
 {
 	"id": "tab-tint",
 	"name": "Tab Tint",
-	"version": "1.0.2",
+	"version": "1.0.3",
 	"minAppVersion": "1.12.0",
 	"description": "Tint tab headers with custom colors to tell open notes apart at a glance.",
 	"author": "CypherPoet",
