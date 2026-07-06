@@ -7,6 +7,18 @@
 	transition: background-color 0.2s ease;
 }
 
+/* Obsidian's own tab-text rules (e.g. the six-class focused-window active-tab
+   rule) read these variables at a specificity no plugin selector should try to
+   outbid. Redefining the variables inside the tinted header wins by scope
+   proximity instead of a specificity war. */
+.workspace-tab-header.tab-tint-tinted {
+	--tab-text-color: var(--tab-tint-ink);
+	--tab-text-color-focused: var(--tab-tint-ink);
+	--tab-text-color-focused-highlighted: var(--tab-tint-ink);
+	--tab-text-color-focused-active: var(--tab-tint-ink);
+	--tab-text-color-focused-active-current: var(--tab-tint-ink);
+}
+
 .workspace-tab-header.tab-tint-tinted .workspace-tab-header-inner-title,
 .workspace-tab-header.tab-tint-tinted .workspace-tab-header-inner-icon,
 .workspace-tab-header.tab-tint-tinted .workspace-tab-header-inner-close-button,
