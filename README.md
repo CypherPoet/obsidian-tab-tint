@@ -2,6 +2,14 @@
 	<img src="assets/banner.svg" alt="Tab Tint — color-code your open tabs" width="720" />
 </p>
 
+<p align="center">
+	<a href="https://x.com/cypher_poet"><img src="https://img.shields.io/badge/%40cypher__poet-000000?style=for-the-badge&logo=x&logoColor=white" alt="X" /></a>
+	<a href="https://www.paypal.com/ncp/payment/L6M553P28YPDY"><img src="https://img.shields.io/badge/PayPal-003087?style=for-the-badge&logo=paypal&logoColor=white" alt="PayPal" /></a>
+	<a href="https://cash.app/$CypherPoet"><img src="https://img.shields.io/badge/Cash_App-00C244?style=for-the-badge&logo=cashapp&logoColor=white" alt="Cash App" /></a>
+	<a href="https://buymeacoffee.com/cypherpoet"><img src="https://img.shields.io/badge/Buy_Me_a_Coffee-FFDD00?style=for-the-badge&logo=buymeacoffee&logoColor=000000" alt="Buy Me a Coffee" /></a>
+	<a href="https://github.com/CypherPoet/obsidian-tab-tint/blob/main/LICENSE"><img src="https://img.shields.io/badge/MIT_License-ff7300?style=for-the-badge&logo=opensourceinitiative&logoColor=000000" alt="MIT License" /></a>
+</p>
+
 An [Obsidian](https://obsidian.md) plugin that tints tab headers with custom colors, so you can tell open notes apart at a glance.
 
 ## Why
