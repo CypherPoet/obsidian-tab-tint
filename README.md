@@ -69,9 +69,6 @@ Every slot's name and color is editable under **Settings → Tab Tint**; **Reset
 
 Obsidian has no public API for styling tab headers, so Tab Tint (like every tab-styling plugin) reads two undocumented internals. These reads are quarantined in [`tabColors.ts`](tabColors.ts) behind null-safe accessors: if a future Obsidian update renames them, tints silently stop applying rather than anything crashing. If that happens, update the plugin — or [open an issue](https://github.com/CypherPoet/obsidian-tab-tint/issues) and it'll be a small fix.
 
-## Credits
-
-Tab Tint is a clean reimplementation inspired by [ColorTab](https://github.com/rordaz/ColorTab) by Rafael Ordaz (MIT).
 
 ## License
 
