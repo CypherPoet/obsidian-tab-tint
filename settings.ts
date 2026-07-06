@@ -167,14 +167,13 @@ export class TabTintSettingTab extends PluginSettingTab {
 			.setName("Reset palette")
 			.setDesc("Restore the five default pastel colors and their names.")
 			.addButton((button) => {
-				// setDestructive shipped in Obsidian 1.13; fall back on the 1.12 API.
-				if (typeof button.setDestructive === "function") {
-					button.setDestructive();
-				} else {
-					button.setWarning();
-				}
+				// setWarning is deprecated in 1.13 (→ setDestructive), but the
+				// registry's no-unsupported-api check statically flags any
+				// reference to 1.13 APIs while minAppVersion is 1.12 — even
+				// behind a runtime guard. See AGENTS.md.
 				button
 					.setButtonText("Reset")
+					.setWarning()
 					.onClick(async () => {
 						this.plugin.settings.palette = DEFAULT_SETTINGS.palette.map(
 							(entry) => ({ ...entry })

@@ -18,7 +18,9 @@ Obsidian exposes no public API for a tab's header element or a menu item's root 
 `minAppVersion` is 1.12.0 — the primary test vault runs 1.12.x. Two registry-review deprecation recommendations are deliberate casualties of that floor; resolve them only when the floor moves to 1.13+:
 
 - `PluginSettingTab.display()` → `getSettingDefinitions()` (new in 1.13)
-- `ButtonComponent.setWarning()` → `setDestructive()` (new in 1.13; the reset button feature-detects it)
+- `ButtonComponent.setWarning()` → `setDestructive()` (new in 1.13)
+
+Do not try to bridge these with runtime feature-detection: the registry's `no-unsupported-api` review rule **statically** flags any reference to an API newer than `minAppVersion`, even behind a `typeof` guard, and fails the review with a blocking error (learned the hard way at 1.0.2). The deprecated calls stay until the floor moves.
 
 ## Releasing
 
