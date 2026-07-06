@@ -14,7 +14,13 @@ import {
 	resolveSettings,
 	slotDisplayName,
 } from "./settings";
-import { getMenuItemEl, getTabHeaderEl, readableInk } from "./tabColors";
+import {
+	DARK_INK,
+	LIGHT_INK,
+	getMenuItemEl,
+	getTabHeaderEl,
+	readableInk,
+} from "./tabColors";
 
 const TINTED_CLASS = "tab-tint-tinted";
 
@@ -215,12 +221,25 @@ export default class TabTintPlugin extends Plugin {
 
 		if (entry) {
 			header.style.setProperty("--tab-tint-color", entry.color);
-			header.style.setProperty("--tab-tint-ink", readableInk(entry.color));
+			header.style.setProperty("--tab-tint-ink", this.resolveInk(entry.color));
 			header.classList.add(TINTED_CLASS);
 		} else {
 			header.style.removeProperty("--tab-tint-color");
 			header.style.removeProperty("--tab-tint-ink");
 			header.classList.remove(TINTED_CLASS);
+		}
+	}
+
+	private resolveInk(tintColor: string): string {
+		switch (this.settings.inkMode) {
+			case "dark":
+				return DARK_INK;
+			case "light":
+				return LIGHT_INK;
+			case "custom":
+				return this.settings.customInkColor;
+			default:
+				return readableInk(tintColor);
 		}
 	}
 

@@ -44,6 +44,9 @@ export function normalizeHexColor(value: string): string | null {
 	return null;
 }
 
+export const DARK_INK = "rgba(0, 0, 0, 0.85)";
+export const LIGHT_INK = "rgba(255, 255, 255, 0.92)";
+
 /** Pick a text color with enough contrast against the given background. */
 export function readableInk(backgroundColor: string): string {
 	const hex = normalizeHexColor(backgroundColor);
@@ -52,5 +55,5 @@ export function readableInk(backgroundColor: string): string {
 	const g = parseInt(hex.slice(3, 5), 16);
 	const b = parseInt(hex.slice(5, 7), 16);
 	const luminance = (0.299 * r + 0.587 * g + 0.114 * b) / 255;
-	return luminance > 0.55 ? "rgba(0, 0, 0, 0.85)" : "rgba(255, 255, 255, 0.92)";
+	return luminance > 0.55 ? DARK_INK : LIGHT_INK;
 }

@@ -13,11 +13,15 @@ export interface PaletteEntry {
 	color: string;
 }
 
+export type TabTintInkMode = "auto" | "dark" | "light" | "custom";
+
 export interface TabTintSettings {
 	palette: PaletteEntry[];
 	/** Maps file path → palette slot index. */
 	fileTints: Record<string, number>;
 	autoPinTintedTabs: boolean;
+	inkMode: TabTintInkMode;
+	customInkColor: string;
 }
 
 export const DEFAULT_SETTINGS: TabTintSettings = {
@@ -30,6 +34,8 @@ export const DEFAULT_SETTINGS: TabTintSettings = {
 	],
 	fileTints: {},
 	autoPinTintedTabs: true,
+	inkMode: "auto",
+	customInkColor: "#222222",
 };
 
 export function slotDisplayName(entry: PaletteEntry, slot: number): string {
@@ -74,6 +80,13 @@ export function resolveSettings(raw: unknown): TabTintSettings {
 		}
 	}
 
+	const inkMode: TabTintInkMode =
+		saved.inkMode === "dark" ||
+		saved.inkMode === "light" ||
+		saved.inkMode === "custom"
+			? saved.inkMode
+			: "auto";
+
 	return {
 		palette,
 		fileTints,
@@ -81,6 +94,10 @@ export function resolveSettings(raw: unknown): TabTintSettings {
 			typeof saved.autoPinTintedTabs === "boolean"
 				? saved.autoPinTintedTabs
 				: DEFAULT_SETTINGS.autoPinTintedTabs,
+		inkMode,
+		customInkColor:
+			normalizeHexColor(saved.customInkColor ?? "") ??
+			DEFAULT_SETTINGS.customInkColor,
 	};
 }
 
@@ -111,6 +128,38 @@ export class TabTintSettingTab extends PluginSettingTab {
 					.onChange(async (value) => {
 						this.plugin.settings.autoPinTintedTabs = value;
 						await this.plugin.saveSettings();
+					});
+			});
+
+		let customInkPicker: ColorComponent | undefined;
+		new Setting(containerEl)
+			.setName("Tab text color")
+			.setDesc(
+				"Auto picks dark or light text per tint for contrast. Custom uses the color you choose."
+			)
+			.addDropdown((dropdown) => {
+				dropdown
+					.addOption("auto", "Auto (contrast-based)")
+					.addOption("dark", "Always dark")
+					.addOption("light", "Always light")
+					.addOption("custom", "Custom")
+					.setValue(this.plugin.settings.inkMode)
+					.onChange(async (value) => {
+						this.plugin.settings.inkMode = value as TabTintInkMode;
+						await this.plugin.saveSettings();
+						this.plugin.applyAllTints();
+						customInkPicker?.setDisabled(value !== "custom");
+					});
+			})
+			.addColorPicker((picker) => {
+				customInkPicker = picker;
+				picker
+					.setValue(this.plugin.settings.customInkColor)
+					.setDisabled(this.plugin.settings.inkMode !== "custom")
+					.onChange(async (value) => {
+						this.plugin.settings.customInkColor = value;
+						await this.plugin.saveSettings();
+						this.plugin.applyAllTints();
 					});
 			});
 

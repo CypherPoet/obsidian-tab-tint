@@ -45,7 +45,7 @@ Merging never happens automatically — it only runs when you invoke the command
 
 - Tints follow a file through renames and moves.
 - Tinted tabs are pinned automatically (and unpinned when cleared) — toggle **Auto-pin tinted tabs** off in settings if you'd rather manage pins yourself.
-- Tab text switches between dark and light ink based on the tint, so labels stay readable on any color.
+- Tab text switches between dark and light ink based on the tint, so labels stay readable on any color — or override it with **Tab text color** in settings (always dark, always light, or a custom color).
 - Works in popout windows; sidebar panels are deliberately left untouched.
 - Renaming a palette color updates its command name after the app reloads.
 
