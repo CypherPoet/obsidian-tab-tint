@@ -1,6 +1,6 @@
 {
 	"name": "obsidian-tab-tint",
-	"version": "1.0.1",
+	"version": "1.0.2",
 	"description": "Obsidian plugin that tints tab headers so open notes are distinguishable at a glance",
 	"main": "main.js",
 	"scripts": {
