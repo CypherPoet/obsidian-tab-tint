@@ -5,23 +5,23 @@
 
 	<!-- Tab strip -->
 	<g transform="translate(404, 112)">
-		<path d="M0 46 V9 Q0 0 9 0 H47 Q56 0 56 9 V46 Z" fill="#ffb3ba"/>
+		<path d="M0 46 V9 Q0 0 9 0 H47 Q56 0 56 9 V46 Z" fill="#f53d7d"/>
 		<rect x="12" y="15" width="32" height="5" rx="2.5" fill="rgba(23, 29, 44, 0.32)"/>
 	</g>
 	<g transform="translate(468, 112)">
-		<path d="M0 46 V9 Q0 0 9 0 H47 Q56 0 56 9 V46 Z" fill="#ffdfba"/>
+		<path d="M0 46 V9 Q0 0 9 0 H47 Q56 0 56 9 V46 Z" fill="#eea34f"/>
 		<rect x="12" y="15" width="32" height="5" rx="2.5" fill="rgba(23, 29, 44, 0.32)"/>
 	</g>
 	<g transform="translate(532, 104)">
-		<path d="M0 54 V9 Q0 0 9 0 H47 Q56 0 56 9 V54 Z" fill="#b5ead7"/>
+		<path d="M0 54 V9 Q0 0 9 0 H47 Q56 0 56 9 V54 Z" fill="#73e8bd"/>
 		<rect x="12" y="15" width="32" height="5" rx="2.5" fill="rgba(23, 29, 44, 0.4)"/>
 	</g>
 	<g transform="translate(596, 112)">
-		<path d="M0 46 V9 Q0 0 9 0 H47 Q56 0 56 9 V46 Z" fill="#bae1ff"/>
+		<path d="M0 46 V9 Q0 0 9 0 H47 Q56 0 56 9 V46 Z" fill="#7fbff0"/>
 		<rect x="12" y="15" width="32" height="5" rx="2.5" fill="rgba(23, 29, 44, 0.32)"/>
 	</g>
 	<g transform="translate(660, 112)">
-		<path d="M0 46 V9 Q0 0 9 0 H47 Q56 0 56 9 V46 Z" fill="#e2baff"/>
+		<path d="M0 46 V9 Q0 0 9 0 H47 Q56 0 56 9 V46 Z" fill="#ba74ec"/>
 		<rect x="12" y="15" width="32" height="5" rx="2.5" fill="rgba(23, 29, 44, 0.32)"/>
 	</g>
 	<rect x="396" y="158" width="328" height="5" rx="2.5" fill="#2a3350"/>

@@ -1,23 +1,23 @@
-<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 700 168" role="img" aria-label="Default palette: Rose #ffb3ba, Peach #ffdfba, Mint #b5ead7, Sky #bae1ff, Lavender #e2baff">
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 700 168" role="img" aria-label="Default palette: Berry #f53d7d, Peach #eea34f, Mint #73e8bd, Sky #7fbff0, Lavender #ba74ec">
 	<rect x="0" y="0" width="700" height="168" rx="18" fill="#1b2233"/>
 
-	<rect x="58" y="24" width="72" height="72" rx="14" fill="#ffb3ba"/>
-	<text x="94" y="125" text-anchor="middle" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', 'Helvetica Neue', Arial, sans-serif" font-size="16" font-weight="600" fill="#eef2fa">Rose</text>
-	<text x="94" y="147" text-anchor="middle" font-family="ui-monospace, 'SF Mono', Menlo, Consolas, monospace" font-size="13" fill="#939db6">#ffb3ba</text>
+	<rect x="58" y="24" width="72" height="72" rx="14" fill="#f53d7d"/>
+	<text x="94" y="125" text-anchor="middle" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', 'Helvetica Neue', Arial, sans-serif" font-size="16" font-weight="600" fill="#eef2fa">Berry</text>
+	<text x="94" y="147" text-anchor="middle" font-family="ui-monospace, 'SF Mono', Menlo, Consolas, monospace" font-size="13" fill="#939db6">#f53d7d</text>
 
-	<rect x="186" y="24" width="72" height="72" rx="14" fill="#ffdfba"/>
+	<rect x="186" y="24" width="72" height="72" rx="14" fill="#eea34f"/>
 	<text x="222" y="125" text-anchor="middle" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', 'Helvetica Neue', Arial, sans-serif" font-size="16" font-weight="600" fill="#eef2fa">Peach</text>
-	<text x="222" y="147" text-anchor="middle" font-family="ui-monospace, 'SF Mono', Menlo, Consolas, monospace" font-size="13" fill="#939db6">#ffdfba</text>
+	<text x="222" y="147" text-anchor="middle" font-family="ui-monospace, 'SF Mono', Menlo, Consolas, monospace" font-size="13" fill="#939db6">#eea34f</text>
 
-	<rect x="314" y="24" width="72" height="72" rx="14" fill="#b5ead7"/>
+	<rect x="314" y="24" width="72" height="72" rx="14" fill="#73e8bd"/>
 	<text x="350" y="125" text-anchor="middle" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', 'Helvetica Neue', Arial, sans-serif" font-size="16" font-weight="600" fill="#eef2fa">Mint</text>
-	<text x="350" y="147" text-anchor="middle" font-family="ui-monospace, 'SF Mono', Menlo, Consolas, monospace" font-size="13" fill="#939db6">#b5ead7</text>
+	<text x="350" y="147" text-anchor="middle" font-family="ui-monospace, 'SF Mono', Menlo, Consolas, monospace" font-size="13" fill="#939db6">#73e8bd</text>
 
-	<rect x="442" y="24" width="72" height="72" rx="14" fill="#bae1ff"/>
+	<rect x="442" y="24" width="72" height="72" rx="14" fill="#7fbff0"/>
 	<text x="478" y="125" text-anchor="middle" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', 'Helvetica Neue', Arial, sans-serif" font-size="16" font-weight="600" fill="#eef2fa">Sky</text>
-	<text x="478" y="147" text-anchor="middle" font-family="ui-monospace, 'SF Mono', Menlo, Consolas, monospace" font-size="13" fill="#939db6">#bae1ff</text>
+	<text x="478" y="147" text-anchor="middle" font-family="ui-monospace, 'SF Mono', Menlo, Consolas, monospace" font-size="13" fill="#939db6">#7fbff0</text>
 
-	<rect x="570" y="24" width="72" height="72" rx="14" fill="#e2baff"/>
+	<rect x="570" y="24" width="72" height="72" rx="14" fill="#ba74ec"/>
 	<text x="606" y="125" text-anchor="middle" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', 'Helvetica Neue', Arial, sans-serif" font-size="16" font-weight="600" fill="#eef2fa">Lavender</text>
-	<text x="606" y="147" text-anchor="middle" font-family="ui-monospace, 'SF Mono', Menlo, Consolas, monospace" font-size="13" fill="#939db6">#e2baff</text>
+	<text x="606" y="147" text-anchor="middle" font-family="ui-monospace, 'SF Mono', Menlo, Consolas, monospace" font-size="13" fill="#939db6">#ba74ec</text>
 </svg>
