@@ -340,7 +340,7 @@ export default class TabTintPlugin extends Plugin {
 		if (leaf.isDeferred) {
 			const state = leaf.getViewState();
 			if (state.type === "graph" || state.type === "localgraph") return null;
-			const file = (state.state as Record<string, unknown> | undefined)?.file;
+			const file = state.state?.file;
 			if (typeof file === "string") return file;
 		}
 
