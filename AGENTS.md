@@ -15,7 +15,7 @@ Obsidian exposes no public API for a tab's header element or a menu item's root 
 
 ## Compatibility floor
 
-`minAppVersion` is 1.12.0 — the primary test vault runs 1.12.x. Two registry-review deprecation recommendations are deliberate casualties of that floor; resolve them only when the floor moves to 1.13+:
+`minAppVersion` is 1.12.0, tracking the latest *public* Obsidian release — the 1.13 APIs the registry review recommends exist only in early-access builds. Two review recommendations are deliberate casualties of that floor; resolve them only when 1.13 is generally available and the floor moves:
 
 - `PluginSettingTab.display()` → `getSettingDefinitions()` (new in 1.13)
 - `ButtonComponent.setWarning()` → `setDestructive()` (new in 1.13)
