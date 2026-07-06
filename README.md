@@ -14,13 +14,7 @@ An [Obsidian](https://obsidian.md) plugin that tints tab headers with custom col
 
 ## Why
 
-When you work across several notes at once — researching, cross-referencing, writing — finding the right tab by its title alone is slow. Tab Tint gives each tab a color you assign, so your eyes jump straight to it:
-
-- 🔴 **Rose** — the note you're actively writing
-- 🟠 **Peach** — diagrams supporting the work
-- 🟢 **Mint** — reference material you keep returning to
-- 🔵 **Sky** — other useful references
-- 🟣 **Lavender** — meeting notes and logs
+When you work across several notes at once — researching, cross-referencing, writing — finding the right tab by its title alone is slow. Tab Tint gives each tab a color you assign, so your eyes jump straight to it. What each color means is up to you: you might reserve one for the note you're actively drafting and another for reference material you keep returning to.
 
 A tint means something: each tab remembers which palette slot you gave it. Recolor the slot in settings and every tab wearing it updates — your "reference material" color stays your reference-material color, whatever hex it points at today.
 
@@ -42,7 +36,7 @@ A tint means something: each tab remembers which palette slot you gave it. Recol
 
 | Command | What it does |
 | --- | --- |
-| Apply tint 1–5 | Tint the current tab with that palette slot |
+| Apply tint 1–N | Tint the current tab with that palette slot (one command per color) |
 | Clear tint | Remove the current tab's tint |
 | Clear all tints | Remove every tint in the vault |
 | Merge duplicate tabs | Close extra tabs showing the same file, keeping the active one |
@@ -55,23 +49,25 @@ Merging never happens automatically — it only runs when you invoke the command
 - Tinted tabs are pinned automatically (and unpinned when cleared) — toggle **Auto-pin tinted tabs** off in settings if you'd rather manage pins yourself.
 - Tab text switches between dark and light ink based on the tint, so labels stay readable on any color — or override it with **Tab text color** in settings (always dark, always light, or a custom color).
 - Works in popout windows; sidebar panels are deliberately left untouched.
-- Renaming a palette color updates its command name after the app reloads.
+- Renaming a palette color updates its command name immediately.
+- Add and remove palette colors in settings (the palette keeps at least one). Removing a color clears — and, with auto-pin on, unpins — any tabs using it; every other tab keeps its color.
+- Hotkeys stay bound to their slot number: a hotkey for **Apply tint 2** keeps working as colors are added or removed, and goes dormant if slot 2 itself is removed.
 
 ## Default palette
 
 <p>
-	<img src="assets/palette.svg" alt="Default palette — Rose, Peach, Mint, Sky, Lavender" width="640" />
+	<img src="assets/palette.svg" alt="Default palette — Berry, Peach, Mint, Sky, Lavender" width="640" />
 </p>
 
 | Slot | Name | Hex |
 | --- | --- | --- |
-| 1 | Rose | `#ffb3ba` |
-| 2 | Peach | `#ffdfba` |
-| 3 | Mint | `#b5ead7` |
-| 4 | Sky | `#bae1ff` |
-| 5 | Lavender | `#e2baff` |
+| 1 | Berry | `#f53d7d` |
+| 2 | Peach | `#eea34f` |
+| 3 | Mint | `#73e8bd` |
+| 4 | Sky | `#7fbff0` |
+| 5 | Lavender | `#ba74ec` |
 
-Every slot's name and color is editable under **Settings → Tab Tint**; **Reset palette** restores the pastels above.
+Every slot's name and color is editable under **Settings → Tab Tint**, and colors can be added or removed there; **Reset palette** restores the defaults above.
 
 ## A note on Obsidian internals
 
