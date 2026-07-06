@@ -26,11 +26,11 @@ export interface TabTintSettings {
 
 export const DEFAULT_SETTINGS: TabTintSettings = {
 	palette: [
-		{ name: "Rose", color: "#ffb3ba" },
-		{ name: "Peach", color: "#ffdfba" },
-		{ name: "Mint", color: "#b5ead7" },
-		{ name: "Sky", color: "#bae1ff" },
-		{ name: "Lavender", color: "#e2baff" },
+		{ name: "Berry", color: "#f53d7d" },
+		{ name: "Peach", color: "#eea34f" },
+		{ name: "Mint", color: "#73e8bd" },
+		{ name: "Sky", color: "#7fbff0" },
+		{ name: "Lavender", color: "#ba74ec" },
 	],
 	fileTints: {},
 	autoPinTintedTabs: true,
@@ -57,14 +57,20 @@ export function resolveSettings(raw: unknown): TabTintSettings {
 	const savedPalette = Array.isArray(saved.palette)
 		? saved.palette.filter(isPaletteEntry)
 		: [];
-	const palette = DEFAULT_SETTINGS.palette.map((fallback, slot) => {
-		const entry = savedPalette[slot];
-		if (!entry) return { ...fallback };
-		return {
-			name: entry.name,
-			color: normalizeHexColor(entry.color) ?? fallback.color,
-		};
-	});
+	// An entry with an unparseable color keeps its slot (with a fallback color)
+	// instead of being dropped — dropping would shift every higher fileTints
+	// index and silently recolor tabs.
+	const palette: PaletteEntry[] =
+		savedPalette.length > 0
+			? savedPalette.map((entry, slot) => ({
+					name: entry.name,
+					color:
+						normalizeHexColor(entry.color) ??
+						DEFAULT_SETTINGS.palette[
+							slot % DEFAULT_SETTINGS.palette.length
+						].color,
+				}))
+			: DEFAULT_SETTINGS.palette.map((entry) => ({ ...entry }));
 
 	const fileTints: Record<string, number> = {};
 	if (saved.fileTints !== null && typeof saved.fileTints === "object") {
@@ -118,6 +124,16 @@ export class TabTintSettingTab extends PluginSettingTab {
 		});
 
 		new Setting(containerEl)
+			.setName("Add color")
+			.setDesc("Append a new color to the palette.")
+			.addButton((button) => {
+				button.setButtonText("Add").onClick(async () => {
+					await this.plugin.addPaletteColor();
+					this.display();
+				});
+			});
+
+		new Setting(containerEl)
 			.setName("Auto-pin tinted tabs")
 			.setDesc(
 				"Pin a tab when you tint it and unpin it when you clear the tint."
@@ -165,7 +181,7 @@ export class TabTintSettingTab extends PluginSettingTab {
 
 		new Setting(containerEl)
 			.setName("Reset palette")
-			.setDesc("Restore the five default pastel colors and their names.")
+			.setDesc("Restore the five default colors and their names.")
 			.addButton((button) => {
 				// setWarning is deprecated in 1.13 (→ setDestructive), but the
 				// registry's no-unsupported-api check statically flags any
@@ -175,11 +191,7 @@ export class TabTintSettingTab extends PluginSettingTab {
 					.setButtonText("Reset")
 					.setWarning()
 					.onClick(async () => {
-						this.plugin.settings.palette = DEFAULT_SETTINGS.palette.map(
-							(entry) => ({ ...entry })
-						);
-						await this.plugin.saveSettings();
-						this.plugin.applyAllTints();
+						await this.plugin.resetPalette();
 						this.display();
 					});
 			});
@@ -198,6 +210,7 @@ export class TabTintSettingTab extends PluginSettingTab {
 					.onChange(async (value) => {
 						entry.name = value;
 						await this.plugin.saveSettings();
+						this.plugin.refreshTintCommands();
 					});
 				text.inputEl.addClass("tab-tint-name-input");
 				text.inputEl.setAttribute(
@@ -236,6 +249,21 @@ export class TabTintSettingTab extends PluginSettingTab {
 					hexText?.setValue(value);
 					hexText?.inputEl.removeClass("tab-tint-invalid");
 				});
+			})
+			.addExtraButton((button) => {
+				const isLast = this.plugin.settings.palette.length <= 1;
+				button
+					.setIcon("trash")
+					.setTooltip(
+						isLast
+							? "The palette needs at least one color"
+							: "Remove color"
+					)
+					.setDisabled(isLast)
+					.onClick(async () => {
+						await this.plugin.removePaletteColor(slot);
+						this.display();
+					});
 			});
 	}
 }

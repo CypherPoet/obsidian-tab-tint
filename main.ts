@@ -8,6 +8,7 @@ import {
 	WorkspaceLeaf,
 } from "obsidian";
 import {
+	DEFAULT_SETTINGS,
 	PaletteEntry,
 	TabTintSettings,
 	TabTintSettingTab,
@@ -84,19 +85,10 @@ export default class TabTintPlugin extends Plugin {
 
 	// ── Commands ──────────────────────────────────────────────────────────────
 
+	private tintCommandCount = 0;
+
 	private registerCommands() {
-		this.settings.palette.forEach((entry, slot) => {
-			this.addCommand({
-				id: `apply-tint-${slot + 1}`,
-				name: `Apply tint ${slot + 1}: ${slotDisplayName(entry, slot)}`,
-				checkCallback: (checking) => {
-					const leaf = this.app.workspace.getMostRecentLeaf();
-					if (!leaf || this.getTintablePath(leaf) === null) return false;
-					if (!checking) this.setTint(leaf, slot);
-					return true;
-				},
-			});
-		});
+		this.registerTintCommands();
 
 		this.addCommand({
 			id: "clear-tint",
@@ -124,6 +116,30 @@ export default class TabTintPlugin extends Plugin {
 			name: "Merge duplicate tabs",
 			callback: () => this.mergeDuplicateTabs(),
 		});
+	}
+
+	private registerTintCommands() {
+		this.settings.palette.forEach((entry, slot) => {
+			this.addCommand({
+				id: `apply-tint-${slot + 1}`,
+				name: `Apply tint ${slot + 1}: ${slotDisplayName(entry, slot)}`,
+				checkCallback: (checking) => {
+					const leaf = this.app.workspace.getMostRecentLeaf();
+					if (!leaf || this.getTintablePath(leaf) === null) return false;
+					if (!checking) this.setTint(leaf, slot);
+					return true;
+				},
+			});
+		});
+		this.tintCommandCount = this.settings.palette.length;
+	}
+
+	/** Re-derive the apply-tint commands after the palette changes size or names. */
+	refreshTintCommands() {
+		for (let slot = 0; slot < this.tintCommandCount; slot++) {
+			this.removeCommand(`apply-tint-${slot + 1}`);
+		}
+		this.registerTintCommands();
 	}
 
 	// ── Context menu ──────────────────────────────────────────────────────────
@@ -192,6 +208,72 @@ export default class TabTintPlugin extends Plugin {
 
 	applyAllTints() {
 		this.app.workspace.iterateAllLeaves((leaf) => this.refreshLeaf(leaf));
+	}
+
+	// ── Palette editing ───────────────────────────────────────────────────────
+
+	async addPaletteColor() {
+		const { palette } = this.settings;
+		// Seed the new slot by cycling the defaults instead of a flat gray.
+		const template =
+			DEFAULT_SETTINGS.palette[palette.length % DEFAULT_SETTINGS.palette.length];
+		palette.push({ name: "", color: template.color });
+		await this.saveSettings();
+		this.refreshTintCommands();
+	}
+
+	async removePaletteColor(slot: number) {
+		const { palette, fileTints } = this.settings;
+		if (palette.length <= 1 || slot < 0 || slot >= palette.length) return;
+
+		palette.splice(slot, 1);
+
+		// Tabs on the removed slot lose their tint; higher slots shift down so
+		// every other tab keeps the exact color it had.
+		const clearedPaths = new Set<string>();
+		for (const [path, s] of Object.entries(fileTints)) {
+			if (s === slot) {
+				delete fileTints[path];
+				clearedPaths.add(path);
+			} else if (s > slot) {
+				fileTints[path] = s - 1;
+			}
+		}
+
+		await this.saveSettings();
+		this.refreshTintCommands();
+		this.repaintAfterPaletteChange(clearedPaths);
+	}
+
+	async resetPalette() {
+		this.settings.palette = DEFAULT_SETTINGS.palette.map((entry) => ({
+			...entry,
+		}));
+
+		// The palette may have shrunk (user had more colors than the defaults).
+		const clearedPaths = new Set<string>();
+		for (const [path, slot] of Object.entries(this.settings.fileTints)) {
+			if (slot >= this.settings.palette.length) {
+				delete this.settings.fileTints[path];
+				clearedPaths.add(path);
+			}
+		}
+
+		await this.saveSettings();
+		this.refreshTintCommands();
+		this.repaintAfterPaletteChange(clearedPaths);
+	}
+
+	private repaintAfterPaletteChange(clearedPaths: Set<string>) {
+		this.app.workspace.iterateAllLeaves((leaf) => {
+			const path = this.getTintablePath(leaf);
+			if (path !== null && clearedPaths.has(path)) {
+				this.paintHeader(leaf, null);
+				if (this.settings.autoPinTintedTabs) leaf.setPinned(false);
+			} else {
+				this.refreshLeaf(leaf);
+			}
+		});
 	}
 
 	private refreshLeaf(leaf: WorkspaceLeaf) {
