@@ -1,0 +1,39 @@
+name: Version check
+
+on:
+  pull_request:
+    branches: [main]
+
+jobs:
+  require-version-bump:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v7
+        with:
+          fetch-depth: 0
+
+      - name: Require a manifest.json version bump when plugin code changes
+        env:
+          BASE_SHA: ${{ github.event.pull_request.base.sha }}
+          HEAD_SHA: ${{ github.event.pull_request.head.sha }}
+        run: |
+          # Only code that ships in the built plugin forces a release.
+          # Docs, assets, and CI config can change without a version bump.
+          changed_code=$(git diff --name-only "$BASE_SHA...$HEAD_SHA" -- '*.ts' 'styles.css')
+          if [ -z "$changed_code" ]; then
+            echo "No plugin code changed in this PR; a version bump isn't required."
+            exit 0
+          fi
+          echo "Plugin code changed in this PR:"
+          echo "$changed_code" | sed 's/^/  /'
+
+          base_version=$(git show "$BASE_SHA:manifest.json" | jq -r .version)
+          head_version=$(git show "$HEAD_SHA:manifest.json" | jq -r .version)
+          echo "manifest.json version — base: $base_version, head: $head_version"
+
+          if [ "$base_version" = "$head_version" ]; then
+            echo "::error::Plugin code changed but manifest.json is still $head_version. Bump it with 'npm version patch|minor|major --no-git-tag-version' (updates manifest.json + versions.json) and commit, so the change ships a release on merge."
+            exit 1
+          fi
+
+          echo "Version bumped $base_version -> $head_version — good."
