@@ -74,8 +74,7 @@ export default class TabTintPlugin extends Plugin {
 		this.app.workspace.iterateAllLeaves((leaf) => {
 			const header = getTabHeaderEl(leaf);
 			if (!header?.classList.contains(TINTED_CLASS)) return;
-			this.paintHeader(leaf, null);
-			if (this.settings.autoPinTintedTabs) leaf.setPinned(false);
+			this.clearLeafPaint(leaf);
 		});
 	}
 
@@ -201,8 +200,7 @@ export default class TabTintPlugin extends Plugin {
 		this.app.workspace.iterateAllLeaves((leaf) => {
 			const path = this.getTintablePath(leaf);
 			if (path === null || !tintedPaths.has(path)) return;
-			this.paintHeader(leaf, null);
-			if (this.settings.autoPinTintedTabs) leaf.setPinned(false);
+			this.clearLeafPaint(leaf);
 		});
 	}
 
@@ -268,8 +266,7 @@ export default class TabTintPlugin extends Plugin {
 		this.app.workspace.iterateAllLeaves((leaf) => {
 			const path = this.getTintablePath(leaf);
 			if (path !== null && clearedPaths.has(path)) {
-				this.paintHeader(leaf, null);
-				if (this.settings.autoPinTintedTabs) leaf.setPinned(false);
+				this.clearLeafPaint(leaf);
 			} else {
 				this.refreshLeaf(leaf);
 			}
@@ -310,6 +307,12 @@ export default class TabTintPlugin extends Plugin {
 			header.style.removeProperty("--tab-tint-ink");
 			header.classList.remove(TINTED_CLASS);
 		}
+	}
+
+	/** Strip a leaf's tint paint, and unpin it when auto-pin is on. */
+	private clearLeafPaint(leaf: WorkspaceLeaf) {
+		this.paintHeader(leaf, null);
+		if (this.settings.autoPinTintedTabs) leaf.setPinned(false);
 	}
 
 	private resolveInk(tintColor: string): string {
