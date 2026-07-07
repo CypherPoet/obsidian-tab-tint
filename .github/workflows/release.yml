@@ -1,9 +1,14 @@
 name: Release
 
+# Fires when a merge to main changes manifest.json. If its version is new, the
+# job builds the plugin and creates a draft release tagged with that exact
+# version (no "v" prefix, as Obsidian requires). Bumping the version in a PR is
+# therefore all it takes to ship — see AGENTS.md "Releasing".
 on:
   push:
-    tags:
-      - "*"
+    branches: [main]
+    paths:
+      - manifest.json
 
 permissions:
   contents: write
@@ -16,16 +21,34 @@ jobs:
     steps:
       - uses: actions/checkout@v7
 
-      - uses: actions/setup-node@v6
+      - name: Skip if this version was already released
+        id: guard
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          version=$(jq -r .version manifest.json)
+          echo "version=$version" >> "$GITHUB_OUTPUT"
+          if gh release view "$version" >/dev/null 2>&1; then
+            echo "Release $version already exists; nothing to do."
+            echo "release=false" >> "$GITHUB_OUTPUT"
+          else
+            echo "Version $version has no release yet."
+            echo "release=true" >> "$GITHUB_OUTPUT"
+          fi
+
+      - if: steps.guard.outputs.release == 'true'
+        uses: actions/setup-node@v6
         with:
           node-version: "22"
 
-      - name: Build plugin
+      - if: steps.guard.outputs.release == 'true'
+        name: Build plugin
         run: |
           npm ci
           npm run build
 
-      - name: Attest build provenance
+      - if: steps.guard.outputs.release == 'true'
+        name: Attest build provenance
         uses: actions/attest-build-provenance@v4
         with:
           subject-path: |
@@ -33,12 +56,14 @@ jobs:
             manifest.json
             styles.css
 
-      - name: Create draft release
+      - if: steps.guard.outputs.release == 'true'
+        name: Create draft release
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         run: |
-          tag="${GITHUB_REF#refs/tags/}"
-          gh release create "$tag" \
-            --title "$tag" \
+          version="${{ steps.guard.outputs.version }}"
+          gh release create "$version" \
+            --title "$version" \
+            --target "$GITHUB_SHA" \
             --draft \
             main.js manifest.json styles.css
