@@ -24,4 +24,12 @@ Do not try to bridge these with runtime feature-detection: the registry's `no-un
 
 ## Releasing
 
-Tag must exactly equal `manifest.json`'s `version` — no `v` prefix (Obsidian requires the exact match). `npm version patch|minor|major` bumps `manifest.json` and `versions.json` together (via `version-bump.mjs`), then `git push && git push --tags`. CI builds from the tag and creates a draft release with `main.js`, `manifest.json`, and `styles.css` attached; review and publish it.
+Releases are cut automatically from `main`: when a merge changes `manifest.json`'s `version`, the `Release` workflow builds the plugin and creates a **draft** GitHub release — tagged with that exact version, no `v` prefix (Obsidian requires the exact match) — with `main.js`, `manifest.json`, and `styles.css` attached. Review and publish the draft.
+
+So every code change ships by bumping the version **in its PR**:
+
+- Run `npm version patch|minor|major --no-git-tag-version` — updates `manifest.json` and `versions.json` together (via `version-bump.mjs`) without committing or tagging — then commit those files as part of the PR.
+- The `Version check` workflow **fails any PR** that touches plugin code (`*.ts`, `styles.css`) without a `manifest.json` version bump, so a shippable change can't merge without queuing a release.
+- On merge, the tag and draft release are created for you — there is no manual `git push --tags` step.
+
+`.npmrc` pins `tag-version-prefix=""` so a local `npm version` (should you ever tag by hand) produces the bare tag Obsidian needs, not npm's default `v`-prefixed one.
