@@ -1,0 +1,29 @@
+name: CI
+
+# Runs the official Obsidian plugin linter and the type-checked build. The
+# linter's no-unsupported-api rule is what the community-directory review runs,
+# so a violation fails here instead of being discovered during review.
+on:
+  pull_request:
+    branches: [main]
+  push:
+    branches: [main]
+
+jobs:
+  lint-and-build:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v7
+
+      - uses: actions/setup-node@v7
+        with:
+          node-version: "22"
+          cache: npm
+
+      - run: npm ci
+
+      - name: Lint
+        run: npm run lint
+
+      - name: Build
+        run: npm run build
