@@ -20,7 +20,9 @@ A tint means something: each tab remembers which palette slot you gave it. Recol
 
 ## Install
 
-**Manually (until the plugin is listed in the community directory):**
+**From Obsidian** — search for **Tab Tint** under **Settings → Community plugins → Browse**, or open its [directory listing](https://obsidian.md/plugins?id=tab-tint). *Awaiting directory approval; until then, install manually.*
+
+**Manually:**
 
 1. Download `main.js`, `manifest.json`, and `styles.css` from the [latest release](https://github.com/CypherPoet/obsidian-tab-tint/releases/latest).
 2. Copy them into `<your-vault>/.obsidian/plugins/tab-tint/`.
