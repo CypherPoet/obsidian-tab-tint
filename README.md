@@ -20,7 +20,7 @@ A tint means something: each tab remembers which palette slot you gave it. Recol
 
 ## Install
 
-**From Obsidian** — search for **Tab Tint** under **Settings → Community plugins → Browse**, or open its [directory listing](https://obsidian.md/plugins?id=tab-tint). *Awaiting directory approval; until then, install manually.*
+**From Obsidian** — search for **Tab Tint** under **Settings → Community plugins → Browse**, or open its [directory listing](https://obsidian.md/plugins?id=tab-tint).
 
 **Manually:**
 
