@@ -4,6 +4,7 @@ import {
 	PluginSettingTab,
 	Setting,
 	TextComponent,
+	type SettingDefinitionItem,
 } from "obsidian";
 import type TabTintPlugin from "./main";
 import { normalizeHexColor } from "./tabColors";
@@ -107,6 +108,9 @@ export function resolveSettings(raw: unknown): TabTintSettings {
 	};
 }
 
+/** Settings bound to declarative controls, resolved via get/setControlValue. */
+type ControlKey = "autoPinTintedTabs" | "inkMode" | "customInkColor";
+
 export class TabTintSettingTab extends PluginSettingTab {
 	plugin: TabTintPlugin;
 
@@ -115,94 +119,134 @@ export class TabTintSettingTab extends PluginSettingTab {
 		this.plugin = plugin;
 	}
 
-	display(): void {
-		const { containerEl } = this;
-		containerEl.empty();
+	getSettingDefinitions(): SettingDefinitionItem<ControlKey>[] {
+		const { palette } = this.plugin.settings;
 
-		this.plugin.settings.palette.forEach((_, slot) => {
-			this.renderPaletteRow(containerEl, slot);
-		});
-
-		new Setting(containerEl)
-			.setName("Add color")
-			.setDesc("Append a new color to the palette.")
-			.addButton((button) => {
-				button.setButtonText("Add").onClick(async () => {
-					await this.plugin.addPaletteColor();
-					this.display();
-				});
-			});
-
-		new Setting(containerEl)
-			.setName("Auto-pin tinted tabs")
-			.setDesc(
-				"Pin a tab when you tint it and unpin it when you clear the tint."
-			)
-			.addToggle((toggle) => {
-				toggle
-					.setValue(this.plugin.settings.autoPinTintedTabs)
-					.onChange(async (value) => {
-						this.plugin.settings.autoPinTintedTabs = value;
-						await this.plugin.saveSettings();
+		return [
+			{
+				type: "list",
+				heading: "Palette",
+				items: palette.map((entry, slot) => ({
+					name: `Color ${slot + 1}`,
+					// The user's own name for the slot is what they'd search for.
+					aliases: entry.name.trim() ? [entry.name.trim()] : undefined,
+					render: (setting: Setting) =>
+						this.renderPaletteRow(setting, slot),
+				})),
+				// Dropped at one color rather than shown-but-refusing: the
+				// palette needs a slot for fileTints indices to mean anything.
+				onDelete:
+					palette.length > 1
+						? (index: number) => void this.removeColor(index)
+						: undefined,
+				addItem: {
+					name: "Add color",
+					action: () => void this.addColor(),
+				},
+			},
+			{
+				name: "Auto-pin tinted tabs",
+				desc: "Pin a tab when you tint it and unpin it when you clear the tint.",
+				control: { type: "toggle", key: "autoPinTintedTabs" },
+			},
+			{
+				name: "Tab text color",
+				desc: "Auto picks dark or light text per tint for contrast.",
+				control: {
+					type: "dropdown",
+					key: "inkMode",
+					options: {
+						auto: "Auto (contrast-based)",
+						dark: "Always dark",
+						light: "Always light",
+						custom: "Custom",
+					},
+				},
+			},
+			{
+				name: "Custom text color",
+				desc: "Used when tab text color is set to custom.",
+				control: {
+					type: "color",
+					key: "customInkColor",
+					disabled: () => this.plugin.settings.inkMode !== "custom",
+				},
+			},
+			{
+				name: "Reset palette",
+				desc: "Restore the five default colors and their names.",
+				render: (setting: Setting) => {
+					setting.addButton((button) => {
+						button
+							.setButtonText("Reset")
+							.setDestructive()
+							.onClick(() => void this.resetPalette());
 					});
-			});
-
-		let customInkPicker: ColorComponent | undefined;
-		new Setting(containerEl)
-			.setName("Tab text color")
-			.setDesc(
-				"Auto picks dark or light text per tint for contrast. Custom uses the color you choose."
-			)
-			.addDropdown((dropdown) => {
-				dropdown
-					.addOption("auto", "Auto (contrast-based)")
-					.addOption("dark", "Always dark")
-					.addOption("light", "Always light")
-					.addOption("custom", "Custom")
-					.setValue(this.plugin.settings.inkMode)
-					.onChange(async (value) => {
-						this.plugin.settings.inkMode = value as TabTintInkMode;
-						await this.plugin.saveSettings();
-						this.plugin.applyAllTints();
-						customInkPicker?.setDisabled(value !== "custom");
-					});
-			})
-			.addColorPicker((picker) => {
-				customInkPicker = picker;
-				picker
-					.setValue(this.plugin.settings.customInkColor)
-					.setDisabled(this.plugin.settings.inkMode !== "custom")
-					.onChange(async (value) => {
-						this.plugin.settings.customInkColor = value;
-						await this.plugin.saveSettings();
-						this.plugin.applyAllTints();
-					});
-			});
-
-		new Setting(containerEl)
-			.setName("Reset palette")
-			.setDesc("Restore the five default colors and their names.")
-			.addButton((button) => {
-				// setWarning is deprecated in 1.13 (→ setDestructive), but the
-				// registry's no-unsupported-api check statically flags any
-				// reference to 1.13 APIs while minAppVersion is 1.12 — even
-				// behind a runtime guard. See AGENTS.md.
-				button
-					.setButtonText("Reset")
-					.setWarning()
-					.onClick(async () => {
-						await this.plugin.resetPalette();
-						this.display();
-					});
-			});
+				},
+			},
+		];
 	}
 
-	private renderPaletteRow(containerEl: HTMLElement, slot: number) {
+	getControlValue(key: string): unknown {
+		const { settings } = this.plugin;
+		switch (key) {
+			case "autoPinTintedTabs":
+				return settings.autoPinTintedTabs;
+			case "inkMode":
+				return settings.inkMode;
+			case "customInkColor":
+				return settings.customInkColor;
+			default:
+				return undefined;
+		}
+	}
+
+	async setControlValue(key: string, value: unknown): Promise<void> {
+		const { settings } = this.plugin;
+		switch (key) {
+			case "autoPinTintedTabs":
+				settings.autoPinTintedTabs = value as boolean;
+				await this.plugin.saveSettings();
+				return;
+			case "inkMode":
+				settings.inkMode = value as TabTintInkMode;
+				await this.plugin.saveSettings();
+				this.plugin.applyAllTints();
+				// The custom-color row's `disabled` predicate reads inkMode.
+				this.refreshDomState();
+				return;
+			case "customInkColor":
+				settings.customInkColor = value as string;
+				await this.plugin.saveSettings();
+				this.plugin.applyAllTints();
+				return;
+		}
+	}
+
+	// Palette edits change how many rows exist, so they need update() (a full
+	// re-render) rather than refreshDomState().
+
+	private async addColor() {
+		await this.plugin.addPaletteColor();
+		this.update();
+	}
+
+	private async removeColor(slot: number) {
+		await this.plugin.removePaletteColor(slot);
+		this.update();
+	}
+
+	private async resetPalette() {
+		await this.plugin.resetPalette();
+		this.update();
+	}
+
+	private renderPaletteRow(setting: Setting, slot: number) {
 		const entry = this.plugin.settings.palette[slot];
 		let hexText: TextComponent | undefined;
 		let picker: ColorComponent | undefined;
 
-		new Setting(containerEl)
+		setting
 			.setName(`Color ${slot + 1}`)
 			.addText((text) => {
 				text.setPlaceholder("Name")
@@ -249,21 +293,7 @@ export class TabTintSettingTab extends PluginSettingTab {
 					hexText?.setValue(value);
 					hexText?.inputEl.removeClass("tab-tint-invalid");
 				});
-			})
-			.addExtraButton((button) => {
-				const isLast = this.plugin.settings.palette.length <= 1;
-				button
-					.setIcon("trash")
-					.setTooltip(
-						isLast
-							? "The palette needs at least one color"
-							: "Remove color"
-					)
-					.setDisabled(isLast)
-					.onClick(async () => {
-						await this.plugin.removePaletteColor(slot);
-						this.display();
-					});
 			});
+		// The row's delete affordance comes from the list's onDelete.
 	}
 }
