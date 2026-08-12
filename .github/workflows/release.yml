@@ -1,14 +1,18 @@
 name: Release
 
-# Fires when a merge to main changes manifest.json. If its version is new, the
-# job builds the plugin and creates a draft release tagged with that exact
-# version (no "v" prefix, as Obsidian requires). Bumping the version in a PR is
-# therefore all it takes to ship — see AGENTS.md "Releasing".
+# A version bump on main must end in a public release because Obsidian reads
+# update assets from GitHub releases. Manual dispatch can repair an existing
+# draft by rebuilding its assets and publishing it.
 on:
   push:
     branches: [main]
     paths:
       - manifest.json
+  workflow_dispatch:
+
+concurrency:
+  group: release-${{ github.repository }}
+  cancel-in-progress: false
 
 permissions:
   contents: write
@@ -19,35 +23,49 @@ jobs:
   release:
     runs-on: ubuntu-latest
     steps:
+      - name: Require the main branch
+        if: github.ref != 'refs/heads/main'
+        run: |
+          echo "::error::Releases must run from the main branch."
+          exit 1
+
       - uses: actions/checkout@v7
 
-      - name: Skip if this version was already released
-        id: guard
+      - uses: actions/setup-node@v7
+        with:
+          node-version: "22"
+
+      - name: Validate release metadata
+        run: npm run validate:release
+
+      - name: Determine release action
+        id: release_state
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         run: |
           version=$(jq -r .version manifest.json)
           echo "version=$version" >> "$GITHUB_OUTPUT"
-          if gh release view "$version" >/dev/null 2>&1; then
-            echo "Release $version already exists; nothing to do."
-            echo "release=false" >> "$GITHUB_OUTPUT"
-          else
+
+          is_draft=$(gh release view "$version" --json isDraft --jq .isDraft 2>/dev/null || true)
+          if [ -z "$is_draft" ]; then
             echo "Version $version has no release yet."
-            echo "release=true" >> "$GITHUB_OUTPUT"
+            echo "release_action=create" >> "$GITHUB_OUTPUT"
+          elif [ "$is_draft" = "true" ]; then
+            echo "Version $version has a draft release that will be rebuilt and published."
+            echo "release_action=publish-draft" >> "$GITHUB_OUTPUT"
+          else
+            echo "Version $version is already public; verifying it."
+            echo "release_action=verify" >> "$GITHUB_OUTPUT"
           fi
 
-      - if: steps.guard.outputs.release == 'true'
-        uses: actions/setup-node@v7
-        with:
-          node-version: "22"
-
-      - if: steps.guard.outputs.release == 'true'
+      - if: steps.release_state.outputs.release_action != 'verify'
         name: Build plugin
         run: |
           npm ci
+          npm run lint
           npm run build
 
-      - if: steps.guard.outputs.release == 'true'
+      - if: steps.release_state.outputs.release_action != 'verify'
         name: Attest build provenance
         uses: actions/attest-build-provenance@v4
         with:
@@ -56,14 +74,62 @@ jobs:
             manifest.json
             styles.css
 
-      - if: steps.guard.outputs.release == 'true'
-        name: Create draft release
+      - if: steps.release_state.outputs.release_action == 'create'
+        name: Create public release
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          VERSION: ${{ steps.release_state.outputs.version }}
         run: |
-          version="${{ steps.guard.outputs.version }}"
+          version="$VERSION"
           gh release create "$version" \
             --title "$version" \
             --target "$GITHUB_SHA" \
-            --draft \
+            --generate-notes \
             main.js manifest.json styles.css
+
+      - if: steps.release_state.outputs.release_action == 'publish-draft'
+        name: Rebuild and publish draft release
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          VERSION: ${{ steps.release_state.outputs.version }}
+        run: |
+          version="$VERSION"
+          gh release upload "$version" main.js manifest.json styles.css --clobber
+          gh release edit "$version" --draft=false --latest
+
+      - name: Verify public update assets
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          VERSION: ${{ steps.release_state.outputs.version }}
+        run: |
+          version="$VERSION"
+          release_json=$(gh release view "$version" --json assets,isDraft,tagName,url)
+
+          if [ "$(printf '%s' "$release_json" | jq -r .isDraft)" != "false" ]; then
+            echo "::error::Release $version is still a draft."
+            exit 1
+          fi
+
+          if [ "$(printf '%s' "$release_json" | jq -r .tagName)" != "$version" ]; then
+            echo "::error::Release tag does not match manifest version $version."
+            exit 1
+          fi
+
+          for required_asset in main.js manifest.json styles.css; do
+            if ! printf '%s' "$release_json" | jq -e --arg asset "$required_asset" '.assets | any(.name == $asset)' >/dev/null; then
+              echo "::error::Release $version is missing $required_asset."
+              exit 1
+            fi
+
+            curl \
+              --fail \
+              --location \
+              --retry 5 \
+              --retry-delay 2 \
+              --silent \
+              --show-error \
+              --output /dev/null \
+              "https://github.com/${GITHUB_REPOSITORY}/releases/download/${version}/${required_asset}"
+          done
+
+          echo "Release $version is public and all Obsidian update assets are downloadable."

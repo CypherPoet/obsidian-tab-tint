@@ -19,4 +19,6 @@ Never call an API newer than `minAppVersion`, even behind a `typeof` guard: `no-
 
 ## Releasing
 
-Bump the version in the PR itself: `npm version patch|minor|major --no-git-tag-version`, then commit `manifest.json` and `versions.json`. Merging to `main` tags the commit and drafts the GitHub release — review and publish that draft. CI fails any PR that changes plugin code without a bump.
+Bump the version in the PR itself: `npm version patch|minor|major --no-git-tag-version`, then commit `manifest.json` and `versions.json`. Merging to `main` builds the plugin, publishes a GitHub release tagged with the exact manifest version, and verifies that `main.js`, `manifest.json`, and `styles.css` are publicly downloadable for Obsidian's updater. CI fails any PR that changes plugin code without a bump.
+
+If a release is ever left as a draft, manually dispatch the Release workflow. It rebuilds and replaces the draft assets before publishing and verifying them.
